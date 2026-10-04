@@ -327,7 +327,7 @@ window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.return
 $('instrument').value='cello';syncSettings();renderPhoto();render();renderAccount();
 config={cloudEnabled:false,preview:true};renderAccount();
 
-$('auth-button').hidden=true;document.querySelectorAll('[data-view="library"],[data-view="family"]').forEach(el=>el.hidden=true);$('auth-dialog').remove();
+$('auth-button').hidden=true;document.querySelectorAll('[data-view="library"],[data-view="family"]').forEach(el=>el.hidden=true);
 $('save').textContent='Download draft';$('save').onclick=handle(()=>{const result=validateScore(score);const url=URL.createObjectURL(new Blob([JSON.stringify(result,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='little-stave-draft.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);dirty=false;notify('Draft downloaded to your device. Keep it private on shared computers.');});
 const load=document.createElement('button');load.className='text-button';load.textContent='Open draft';$('save').after(load);const input=document.createElement('input');input.type='file';input.accept='.json,application/json';input.hidden=true;load.after(input);load.onclick=()=>input.click();input.onchange=handle(async()=>{const file=input.files[0];if(!file)return;if(file.size>500000)throw Error('Draft is too large.');const draft=validateScore(JSON.parse(await file.text()));if((dirty||photo)&&!await confirmAction('Open this draft?','This replaces your unsaved music and clears the local photo.','Open draft'))return;score=draft;savedId=null;selected=-1;dirty=false;warnings=[];clearPhoto();syncSettings();render();notify('Draft opened locally.');input.value='';});
 $('privacy-dialog').innerHTML='<div class="dialog-top"><h2>Your music stays with you.</h2><button class="icon-button" aria-label="Close">×</button></div><p>This is a browser-only demonstration. Photos, drafts and musical context stay in this tab. Nothing is sent for recognition. There are no accounts, advertising, analytics or online saving.</p><p>Use a music-only photograph without names or faces. Closing or reloading the page clears your work unless you download a draft, MusicXML or PDF. Keep downloads private on shared devices.</p><p>GitHub Pages hosts this website and may process connection information such as IP addresses for security. Parent-managed accounts and adult-only recognition belong to the separate hosted application, which is not connected here.</p>';$('privacy-dialog').querySelector('button').onclick=()=>$('privacy-dialog').close();
@@ -1204,4 +1204,3 @@ IN THE SOFTWARE.
 
 -->
 </body></html>
-
